@@ -3,20 +3,30 @@ package org.springframework.samples.petclinic.recoveryroom;
 import java.text.ParseException;
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RecoveryRoomTypeFormatter implements Formatter<RecoveryRoomType>{
+public class RecoveryRoomTypeFormatter implements Formatter<RecoveryRoomType> {
 
-    @Override
-    public String print(RecoveryRoomType object, Locale locale) {
-        return null;
-    }
+	private final RecoveryRoomService recoveryRoomService;
 
-    @Override
-    public RecoveryRoomType parse(String text, Locale locale) throws ParseException {
-        return null;
-    }
-    
+	@Autowired
+	public RecoveryRoomTypeFormatter(RecoveryRoomService rService) {
+		this.recoveryRoomService = rService;
+	}
+
+	@Override
+	public String print(RecoveryRoomType recoveryRoomType, Locale locale) {
+		return recoveryRoomType.getName();
+	}
+
+	@Override
+	public RecoveryRoomType parse(String text, Locale locale) throws ParseException {
+		RecoveryRoomType rType = this.recoveryRoomService.getRecoveryRoomType(text);
+		if(rType != null) return rType;
+		else throw new ParseException("type not found: " + text, 0);
+	}
+
 }
